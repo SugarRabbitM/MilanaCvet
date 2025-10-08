@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Сахарок</title>
+    <style>
+        /* Стили для подписей полей ввода */
+        label {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        /* Стили для вывода значений */
+        .output-text {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #34495e;
+            margin: 5px 0;
+        }
+        
+        /* ОБЩИЕ СТИЛИ для полей периметра и площади */
+        #perimeterOutput, #priceOutput {
+            font-family: 'Arial', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #2980b9;
+            color: #2980b9;
+        }
+        
+        /* Стили для полей ввода */
+        input[type="text"] {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 4px;
+            width: 250px;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <label for="circulation">Тираж:</label><br>
+    <input type="text" id="circulation" name="circulation" placeholder="Введите нужный тираж" 
+           oninput="updateAllFields()"><br><br>
+
+    <label for="width">Ширина:</label><br>
+    <input type="text" id="width" name="width" placeholder="Введите ширину" 
+           oninput="updateAllFields()"><br><br>
+
+    <label for="height">Высота:</label><br>
+    <input type="text" id="height" name="height" placeholder="Введите высоту" 
+           oninput="updateAllFields()"><br><br>
+
+    <div id="circulationOutput" class="output-text">Ввели тираж: </div>
+    <div id="widthOutput" class="output-text">Ввели ширину: </div>
+    <div id="heightOutput" class="output-text">Ввели высоту: </div>
+
+    <!-- Блок для вывода периметра -->
+    <div id="perimeterOutput">Периметр: 0</div>
+
+    <!-- Блок для вывода площади -->
+    <div id="priceOutput">Площадь: 0</div>
+
+    <script>
+    function updateField(fieldId, prefix) {
+        const value = document.getElementById(fieldId).value;
+        const outputElement = document.getElementById(fieldId + 'Output');
+        outputElement.textContent = prefix + value;
+    }
+    
+    // Функция для получения значения тиража с учетом значения по умолчанию
+    function getCirculationValue() {
+        const circulationInput = document.getElementById('circulation');
+        const circulationValue = circulationInput.value.trim();
+        
+        // Если поле пустое, возвращаем 1, иначе преобразуем в число
+        if (circulationValue === '') {
+            return 1;
+        }
+        return parseFloat(circulationValue) || 0;
+    }
+    
+    // Функция для расчета периметра
+    function calculatePerimeter() {
+        const width = parseFloat(document.getElementById('width').value) || 0;
+        const height = parseFloat(document.getElementById('height').value) || 0;
+        
+        // Вычисляем периметр по формуле: (ширина + высота) * 2
+        const perimeter = (width + height) * 2;
+        
+        // Обновляем блок с результатом
+        const perimeterOutput = document.getElementById('perimeterOutput');
+        perimeterOutput.textContent = `Периметр: ${perimeter}`;
+        
+        // Меняем цвет в зависимости от значения
+        if (perimeter < 0) {
+            perimeterOutput.style.color = '#e74c3c';
+            perimeterOutput.style.borderLeftColor = '#e74c3c';
+        } else if (perimeter > 0) {
+            perimeterOutput.style.color = '#2980b9';
+            perimeterOutput.style.borderLeftColor = '#2980b9';
+        } else {
+            perimeterOutput.style.color = '#7f8c8d';
+            perimeterOutput.style.borderLeftColor = '#7f8c8d';
+        }
+        
+        return perimeter;
+    }
+    
+    // Функция для расчета площади
+    function calculatePrice() {
+        // Получаем значения из всех полей и преобразуем в числа
+        const circulation = getCirculationValue();
+        const width = parseFloat(document.getElementById('width').value) || 0;
+        const height = parseFloat(document.getElementById('height').value) || 0;
+        
+        // Вычисляем площадь по формуле: тираж * высота * ширина
+        const price = circulation * height * width;
+        
+        // Обновляем блок с результатом
+        const priceOutput = document.getElementById('priceOutput');
+        priceOutput.textContent = `Площадь: ${price}`;
+        
+        // Меняем цвет в зависимости от значения
+        if (price < 0) {
+            priceOutput.style.color = '#e74c3c';
+            priceOutput.style.borderLeftColor = '#e74c3c';
+        } else if (price > 0) {
+            priceOutput.style.color = '#2980b9';
+            priceOutput.style.borderLeftColor = '#2980b9';
+        } else {
+            priceOutput.style.color = '#7f8c8d';
+            priceOutput.style.borderLeftColor = '#7f8c8d';
+        }
+    }
+    
+    // Общая функция для обновления всех полей
+    function updateAllFields() {
+        updateField('circulation', 'Ввели тираж: ');
+        updateField('width', 'Ввели ширину: ');
+        updateField('height', 'Ввели высоту: ');
+        calculatePerimeter();
+        calculatePrice();
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        updateField('circulation', 'Ввели тираж: ');
+        updateField('width', 'Ввели ширину: ');
+        updateField('height', 'Ввели высоту: ');
+        calculatePerimeter();
+        calculatePrice();
+    });
+    </script>
+</body>
+</html>
