@@ -19,30 +19,17 @@
             margin: 5px 0;
         }
         
-        /* Стили для поля периметра */
-        #perimeterOutput {
+        /* ОБЩИЕ СТИЛИ для полей периметра и площади */
+        #perimeterOutput, #priceOutput {
             font-family: 'Arial', sans-serif;
             font-size: 18px;
             font-weight: bold;
-            color: #2980b9;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            border-left: 4px solid #2980b9;
-        }
-        
-        /* Стили для поля цены */
-        #priceOutput {
-            font-family: 'Arial', sans-serif;
-            font-size: 20px;
-            font-weight: bold;
-            color: #27ae60;
             margin-top: 10px;
             padding: 10px;
             background-color: #f8f9fa;
             border-radius: 5px;
-            border-left: 4px solid #27ae60;
+            border-left: 4px solid #2980b9;
+            color: #2980b9;
         }
         
         /* Стили для полей ввода */
@@ -81,8 +68,8 @@
     <!-- Блок для вывода периметра -->
     <div id="perimeterOutput">Периметр: 0</div>
 
-    <!-- Блок для вывода только цены -->
-    <div id="priceOutput">Цена: 0</div>
+    <!-- Блок для вывода площади -->
+    <div id="priceOutput">Площадь: 0</div>
 
     <script>
     function updateField(fieldId, prefix) {
@@ -130,27 +117,27 @@
         return perimeter;
     }
     
-    // Функция для расчета цены
+    // Функция для расчета площади
     function calculatePrice() {
         // Получаем значения из всех полей и преобразуем в числа
         const circulation = getCirculationValue();
         const width = parseFloat(document.getElementById('width').value) || 0;
         const height = parseFloat(document.getElementById('height').value) || 0;
         
-        // Вычисляем цену по формуле: тираж * высота * ширина
+        // Вычисляем площадь по формуле: тираж * высота * ширина
         const price = circulation * height * width;
         
-        // Обновляем блок с результатом (только число)
+        // Обновляем блок с результатом
         const priceOutput = document.getElementById('priceOutput');
-        priceOutput.textContent = `Цена: ${price}`;
+        priceOutput.textContent = `Площадь: ${price}`;
         
         // Меняем цвет в зависимости от значения
         if (price < 0) {
             priceOutput.style.color = '#e74c3c';
             priceOutput.style.borderLeftColor = '#e74c3c';
         } else if (price > 0) {
-            priceOutput.style.color = '#27ae60';
-            priceOutput.style.borderLeftColor = '#27ae60';
+            priceOutput.style.color = '#2980b9';
+            priceOutput.style.borderLeftColor = '#2980b9';
         } else {
             priceOutput.style.color = '#7f8c8d';
             priceOutput.style.borderLeftColor = '#7f8c8d';
