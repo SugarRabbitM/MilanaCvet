@@ -3,12 +3,33 @@
 <head>
     <title>Сахарок</title>
     <style>
+        /* Основной layout */
+        .container {
+            display: flex;
+            gap: 40px;
+            margin: 0;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .form-section {
+            flex: 1;
+        }
+        
+        .materials-section {
+            flex: 0.5;
+            transform: translateX(-850px);
+        }
+
         /* Стили для подписей полей ввода */
         label {
             font-family: Arial, sans-serif;
             font-size: 16px;
             font-weight: bold;
             color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
         }
         
         /* Стили для вывода значений */
@@ -17,10 +38,16 @@
             font-size: 14px;
             color: #34495e;
             margin: 5px 0;
+            width: 300px; /* ← одинаковая ширина */
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #bdc3c7;
+            box-sizing: border-box;
         }
         
         /* ОБЩИЕ СТИЛИ для полей периметра и площади */
-        #perimeterOutput, #priceOutput {
+        #perimeterOutput, #SquareOutput {
             font-family: 'Arial', sans-serif;
             font-size: 18px;
             font-weight: bold;
@@ -30,6 +57,8 @@
             border-radius: 5px;
             border-left: 4px solid #2980b9;
             color: #2980b9;
+            width: 300px; /* ← одинаковая ширина */
+            box-sizing: border-box;
         }
         
         /* Стили для полей ввода */
@@ -39,127 +68,653 @@
             padding: 8px;
             border: 2px solid #bdc3c7;
             border-radius: 4px;
-            width: 250px;
+            width: 300px; /* ← одинаковая ширина */
+            box-sizing: border-box;
+            margin-bottom: 15px;
         }
         
         input[type="text"]:focus {
             border-color: #3498db;
             outline: none;
         }
+
+        /* Стили для заголовка Материалы */
+        .materials-section h2 {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        /* Стили для списка материалов */
+        .accordion {
+            margin-top: 20px;
+        }
+
+        .accordion-item {
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background-color: #f5f5f5;
+            padding: 12px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-header:hover {
+            background-color: #e9e9e9;
+        }
+
+        .accordion-header::after {
+            content: '▼';
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+
+        .accordion-header.active::after {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            background-color: white;
+        }
+
+        .accordion-content.active {
+            padding: 15px;
+            max-height: 400px; /* Ограничиваем высоту для прокрутки */
+            overflow-y: auto; /* Добавляем вертикальную прокрутку */
+        }
+
+        /* Стили для подзаголовков групп материалов */
+        .material-subheader {
+            font-weight: bold;
+            font-size: 16px;
+            color: #2c3e50;
+            margin: 15px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .material-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .material-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .material-item:last-child {
+            border-bottom: none;
+        }
+
+        .material-name {
+            flex: 1;
+            font-family: Arial, sans-serif;
+        }
+
+        .material-price {
+            font-weight: bold;
+            color: #2980b9;
+            margin-left: 15px;
+        }
+
+        /* Стили для пункта "Не выбирать" */
+        .no-selection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+           
+            cursor: pointer;
+            transition: background-color 0.2s;
+            
+            font-weight: bold;
+        }
+
+        .no-selection-item:hover {
+            background-color: #f8f9fa
+        }
+
+        .no-selection-price {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-left: 15px;
+        }
+
+        .selected-material {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f4fd;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+            width: 300px; /* ← одинаковая ширина */
+            box-sizing: border-box;
+        }
+
+        .price-breakdown {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            width: 300px; /* ← одинаковая ширина */
+            box-sizing: border-box;
+        }
+
+        /* Убираем все центрирования */
+        body {
+            margin: 0;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .container {
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        .form-section, .materials-section {
+            text-align: left;
+        }
     </style>
 </head>
 <body>
-    <label for="circulation">Тираж:</label><br>
-    <input type="text" id="circulation" name="circulation" placeholder="Введите нужный тираж" 
-           oninput="updateAllFields()"><br><br>
+    <div class="container">
+        <div class="form-section">
+            <label for="circulation">Тираж:</label>
+            <input type="text" id="circulation" name="circulation" placeholder="Введите нужный тираж" 
+                   oninput="updateAllFields()">
 
-    <label for="width">Ширина:</label><br>
-    <input type="text" id="width" name="width" placeholder="Введите ширину" 
-           oninput="updateAllFields()"><br><br>
+            <label for="width">Ширина:</label>
+            <input type="text" id="width" name="width" placeholder="Введите ширину" 
+                   oninput="updateAllFields()">
 
-    <label for="height">Высота:</label><br>
-    <input type="text" id="height" name="height" placeholder="Введите высоту" 
-           oninput="updateAllFields()"><br><br>
+            <label for="height">Высота:</label>
+            <input type="text" id="height" name="height" placeholder="Введите высоту" 
+                   oninput="updateAllFields()">
 
-    <div id="circulationOutput" class="output-text">Ввели тираж: </div>
-    <div id="widthOutput" class="output-text">Ввели ширину: </div>
-    <div id="heightOutput" class="output-text">Ввели высоту: </div>
+            <div id="circulationOutput" class="output-text">Ввели тираж: </div>
+            <div id="widthOutput" class="output-text">Ввели ширину: </div>
+            <div id="heightOutput" class="output-text">Ввели высоту: </div>
 
-    <!-- Блок для вывода периметра -->
-    <div id="perimeterOutput">Периметр: 0</div>
+            <!-- Блок для выбранного материала -->
+            <div id="selectedMaterial" class="selected-material" style="display: none;">
+                <strong>Выбранный материал:</strong> <span id="materialName">-</span><br>
+                <strong>Цена за м²:</strong> <span id="materialPrice">0</span> руб.
+            </div>
 
-    <!-- Блок для вывода площади -->
-    <div id="priceOutput">Площадь: 0</div>
+            <!-- Блок для вывода периметра -->
+            <div id="perimeterOutput">Периметр: 0</div>
+
+            <!-- Блок для вывода площади -->
+            <div id="SquareOutput">Площадь: 0</div>
+
+            <!-- Блок с расчетом стоимости -->
+            <div id="priceBreakdown" class="price-breakdown" style="display: none;">
+                <h3>Расчет стоимости:</h3>
+                <div id="breakdownDetails"></div>
+                <div style="margin-top: 10px; font-size: 18px; font-weight: bold; color: #e74c3c;">
+                    Итого: <span id="totalPrice">0</span> руб.
+                </div>
+            </div>
+        </div>
+
+        <div class="materials-section">
+            <h2>Материалы</h2>
+            <div class="accordion">
+                <!-- Объединенный список материалов -->
+                <div class="accordion-item">
+                    <div class="accordion-header" id="accordionTitle">1.6 | 3.2 (М)</div>
+                    <div class="accordion-content">
+                        <!-- Пункт "Не выбирать" -->
+                        <div class="no-selection-item" data-name="Не выбирать" data-display-name="Не выбрано" data-price="1">
+                            <span class="material-name">Не выбирать</span>
+                            <span class="no-selection-price"></span>
+                        </div>
+
+                        <!-- Материалы 1.6 М -->
+                        <div class="material-group">
+                            <div class="material-subheader">1.6 М -----------------------------------------------------------------------------------------------</div>
+                            <div class="material-item" data-name="Пленка Ораджет (1.6 М)" data-price="650">
+                                <span class="material-name">Пленка Ораджет</span>
+                                <span class="material-price">650 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Пленка с плоттеркой (1.6 М)" data-price="1000">
+                                <span class="material-name">Пленка с плоттеркой</span>
+                                <span class="material-price">1000 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Баннер 440 г/м2 (1.6 М)" data-price="415">
+                                <span class="material-name">Баннер 440 г/м²</span>
+                                <span class="material-price">415 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Бумага Ситилайт 150 г/м2 (1.6 М)" data-price="385">
+                                <span class="material-name">Бумага Ситилайт 150 г/м²</span>
+                                <span class="material-price">385 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Бумага Блюбек 90 г/м2 (1.6 М)" data-price="345">
+                                <span class="material-name">Бумага Блюбек 90 г/м²</span>
+                                <span class="material-price">345 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Беклит (1.6 М)" data-price="850">
+                                <span class="material-name">Беклит</span>
+                                <span class="material-price">850 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Перфопленка (1.6 М)" data-price="550">
+                                <span class="material-name">Перфопленка</span>
+                                <span class="material-price">550 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Холст натуральный (1.6 М)" data-price="1700">
+                                <span class="material-name">Холст натуральный</span>
+                                <span class="material-price">1700 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Полипропилен (1.6 М)" data-price="700">
+                                <span class="material-name">Полипропилен</span>
+                                <span class="material-price">700 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Фотолюм (1.6 М)" data-price="3300">
+                                <span class="material-name">Фотолюм</span>
+                                <span class="material-price">3300 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Чертежная бумага (1.6 М)" data-price="270">
+                                <span class="material-name">Чертежная бумага</span>
+                                <span class="material-price">270 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Материал заказчика (1.6 М)" data-price="300">
+                                <span class="material-name">Материал заказчика</span>
+                                <span class="material-price">300 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Пленка Китай DLC (1.6 М)" data-price="490">
+                                <span class="material-name">Пленка Китай DLC</span>
+                                <span class="material-price">490 руб/м²</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Материалы 3.2 М -->
+                        <div class="material-group">
+                            <div class="material-subheader">3.2 М -----------------------------------------------------------------------------------------------</div>
+                            <div class="material-item" data-name="Баннер 440 г/м2 (3.2 М)" data-price="255">
+                                <span class="material-name">Баннер 440 г/м²</span>
+                                <span class="material-price">255 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Баннер 280 г/м2 (3.2 М)" data-price="210">
+                                <span class="material-name">Баннер 280 г/м²</span>
+                                <span class="material-price">210 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Баннер 500 г/м2 (3.2 М)" data-price="360">
+                                <span class="material-name">Баннер 500 г/м²</span>
+                                <span class="material-price">360 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Сетка-баннер (3.2 М)" data-price="305">
+                                <span class="material-name">Сетка-баннер</span>
+                                <span class="material-price">305 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Блюбек 90 г/м2 (3.2 М)" data-price="185">
+                                <span class="material-name">Блюбек 90 г/м²</span>
+                                <span class="material-price">185 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Ситилайт 150 г/м2 (3.2 М)" data-price="270">
+                                <span class="material-name">Ситилайт 150 г/м²</span>
+                                <span class="material-price">270 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Пленка Ораджет (3.2 М)" data-price="510">
+                                <span class="material-name">Пленка Ораджет</span>
+                                <span class="material-price">510 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Баннер Г1 негорючий 500 г/м2 (3.2 М)" data-price="500">
+                                <span class="material-name">Баннер Г1 негорючий 500 г/м²</span>
+                                <span class="material-price">500 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Пленка Китай (3.2 М)" data-price="335">
+                                <span class="material-name">Пленка Китай</span>
+                                <span class="material-price">335 руб/м²</span>
+                            </div>
+                            <div class="material-item" data-name="Баннер 440 ЛИТОЙ г/м2 (3.2 М)" data-price="300">
+                                <span class="material-name">Баннер 440 ЛИТОЙ г/м²</span>
+                                <span class="material-price">300 руб/м²</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ВТОРОЙ список материалов -->
+                <div class="accordion-item">
+                    <div class="accordion-header" id="accordionTitle2">None</div>
+                    <div class="accordion-content">
+                        <!-- Пункт "Не выбирать" -->
+                        <div class="no-selection-item" data-name="Не выбирать" data-display-name="Не выбрано" data-price="1">
+                            <span class="material-name">Не выбирать</span>
+                            <span class="no-selection-price"></span>
+                        </div>
+
+                        <!-- Группа материалов 1 -->
+                        <div class="material-group">
+                            <div class="material-subheader">None</div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Группа материалов 2 -->
+                        <div class="material-group">
+                            <div class="material-subheader">None</div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ТРЕТИЙ список материалов -->
+                <div class="accordion-item">
+                    <div class="accordion-header" id="accordionTitle3">None</div>
+                    <div class="accordion-content">
+                        <!-- Пункт "Не выбирать" -->
+                        <div class="no-selection-item" data-name="Не выбирать" data-display-name="Не выбрано" data-price="1">
+                            <span class="material-name">Не выбирать</span>
+                            <span class="no-selection-price"></span>
+                        </div>
+
+                        <!-- Группа материалов 1 -->
+                        <div class="material-group">
+                            <div class="material-subheader">None</div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Группа материалов 2 -->
+                        <div class="material-group">
+                            <div class="material-subheader">None</div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                            <div class="material-item" data-name="None" data-price="1">
+                                <span class="material-name">None</span>
+                                <span class="material-price">1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-    function updateField(fieldId, prefix) {
-        const value = document.getElementById(fieldId).value;
-        const outputElement = document.getElementById(fieldId + 'Output');
-        outputElement.textContent = prefix + value;
-    }
-    
-    // Функция для получения значения тиража с учетом значения по умолчанию
-    function getCirculationValue() {
-        const circulationInput = document.getElementById('circulation');
-        const circulationValue = circulationInput.value.trim();
-        
-        // Если поле пустое, возвращаем 1, иначе преобразуем в число
-        if (circulationValue === '') {
-            return 1;
-        }
-        return parseFloat(circulationValue) || 0;
-    }
-    
-    // Функция для расчета периметра
-    function calculatePerimeter() {
-        const width = parseFloat(document.getElementById('width').value) || 0;
-        const height = parseFloat(document.getElementById('height').value) || 0;
-        
-        // Вычисляем периметр по формуле: (ширина + высота) * 2
-        const perimeter = (width + height) * 2;
-        
-        // Обновляем блок с результатом
-        const perimeterOutput = document.getElementById('perimeterOutput');
-        perimeterOutput.textContent = `Периметр: ${perimeter}`;
-        
-        // Меняем цвет в зависимости от значения
-        if (perimeter < 0) {
-            perimeterOutput.style.color = '#e74c3c';
-            perimeterOutput.style.borderLeftColor = '#e74c3c';
-        } else if (perimeter > 0) {
-            perimeterOutput.style.color = '#2980b9';
-            perimeterOutput.style.borderLeftColor = '#2980b9';
-        } else {
-            perimeterOutput.style.color = '#7f8c8d';
-            perimeterOutput.style.borderLeftColor = '#7f8c8d';
+        // Переменные для хранения выбранного материала
+        let selectedMaterial = {
+            name: '',
+            price: 0
+        };
+
+        // Функции для основной формы (ваши оригинальные функции)
+        function updateField(fieldId, prefix) {
+            const value = document.getElementById(fieldId).value;
+            const outputElement = document.getElementById(fieldId + 'Output');
+            outputElement.textContent = prefix + value;
         }
         
-        return perimeter;
-    }
-    
-    // Функция для расчета площади
-    function calculatePrice() {
-        // Получаем значения из всех полей и преобразуем в числа
-        const circulation = getCirculationValue();
-        const width = parseFloat(document.getElementById('width').value) || 0;
-        const height = parseFloat(document.getElementById('height').value) || 0;
-        
-        // Вычисляем площадь по формуле: тираж * высота * ширина
-        const price = circulation * height * width;
-        
-        // Обновляем блок с результатом
-        const priceOutput = document.getElementById('priceOutput');
-        priceOutput.textContent = `Площадь: ${price}`;
-        
-        // Меняем цвет в зависимости от значения
-        if (price < 0) {
-            priceOutput.style.color = '#e74c3c';
-            priceOutput.style.borderLeftColor = '#e74c3c';
-        } else if (price > 0) {
-            priceOutput.style.color = '#2980b9';
-            priceOutput.style.borderLeftColor = '#2980b9';
-        } else {
-            priceOutput.style.color = '#7f8c8d';
-            priceOutput.style.borderLeftColor = '#7f8c8d';
+        function getCirculationValue() {
+            const circulationInput = document.getElementById('circulation');
+            const circulationValue = circulationInput.value.trim();
+            
+            if (circulationValue === '') {
+                return 1;
+            }
+            return parseFloat(circulationValue) || 0;
         }
-    }
-    
-    // Общая функция для обновления всех полей
-    function updateAllFields() {
-        updateField('circulation', 'Ввели тираж: ');
-        updateField('width', 'Ввели ширину: ');
-        updateField('height', 'Ввели высоту: ');
-        calculatePerimeter();
-        calculatePrice();
-    }
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        updateField('circulation', 'Ввели тираж: ');
-        updateField('width', 'Ввели ширину: ');
-        updateField('height', 'Ввели высоту: ');
-        calculatePerimeter();
-        calculatePrice();
-    });
+        
+        // Функция для расчета периметра по новой формуле: 2 × тираж × (высота + ширина)
+        function calculatePerimeter() {
+            const circulation = getCirculationValue();
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 0;
+            
+            // Новая формула: 2 × тираж × (высота + ширина)
+            const perimeter = 2 * circulation * (width + height);
+            
+            const perimeterOutput = document.getElementById('perimeterOutput');
+            perimeterOutput.textContent = `Периметр: ${perimeter}`;
+            
+            if (perimeter < 0) {
+                perimeterOutput.style.color = '#e74c3c';
+                perimeterOutput.style.borderLeftColor = '#e74c3c';
+            } else if (perimeter > 0) {
+                perimeterOutput.style.color = '#2980b9';
+                perimeterOutput.style.borderLeftColor = '#2980b9';
+            } else {
+                perimeterOutput.style.color = '#7f8c8d';
+                perimeterOutput.style.borderLeftColor = '#7f8c8d';
+            }
+            
+            return perimeter;
+        }
+        
+        function calculateSquare() {
+            const circulation = getCirculationValue();
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 0;
+            
+            const Square = circulation * height * width;
+            
+            const SquareOutput = document.getElementById('SquareOutput');
+            SquareOutput.textContent = `Площадь: ${Square}`;
+            
+            if (Square < 0) {
+                SquareOutput.style.color = '#e74c3c';
+                SquareOutput.style.borderLeftColor = '#e74c3c';
+            } else if (Square > 0) {
+                SquareOutput.style.color = '#2980b9';
+                SquareOutput.style.borderLeftColor = '#2980b9';
+            } else {
+                SquareOutput.style.color = '#7f8c8d';
+                SquareOutput.style.borderLeftColor = '#7f8c8d';
+            }
+
+            return Square;
+        }
+
+        function updateAllFields() {
+            updateField('circulation', 'Ввели тираж: ');
+            updateField('width', 'Ввели ширину: ');
+            updateField('height', 'Ввели высоту: ');
+            calculatePerimeter();
+            const area = calculateSquare();
+            calculateTotalPrice(area);
+        }
+
+        // Функции для аккордеона материалов
+        function initAccordion() {
+            // Обработчики для заголовков аккордеона
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    // Закрываем все остальные открытые пункты
+                    document.querySelectorAll('.accordion-content').forEach(content => {
+                        if (content !== header.nextElementSibling) {
+                            content.classList.remove('active');
+                            // Также убираем класс active у заголовков
+                            content.previousElementSibling.classList.remove('active');
+                        }
+                    });
+                    
+                    // Переключаем текущий пункт
+                    const content = header.nextElementSibling;
+                    content.classList.toggle('active');
+                    header.classList.toggle('active');
+                });
+            });
+
+            // Обработчики для выбора материала (включая пункт "Не выбирать")
+            document.querySelectorAll('.material-item, .no-selection-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    // Убираем выделение у всех материалов
+                    document.querySelectorAll('.material-item, .no-selection-item').forEach(i => {
+                        i.style.backgroundColor = '';
+                    });
+                    
+                    // Выделяем выбранный материал
+                    item.style.backgroundColor = '#e8f4fd';
+                    
+                    // Сохраняем выбранный материал
+                    selectedMaterial = {
+                        name: item.dataset.name,
+                        displayName: item.dataset.displayName || item.dataset.name,
+                        price: parseFloat(item.dataset.price)
+                    };
+                    
+                    // Обновляем заголовок аккордеона на отображаемое название
+                    const accordionItem = item.closest('.accordion-item');
+                    const accordionHeader = accordionItem.querySelector('.accordion-header');
+                    accordionHeader.textContent = selectedMaterial.displayName;
+                    
+                    // Закрываем аккордеон после выбора
+                    closeAllAccordions();
+                    
+                    // Обновляем отображение выбранного материала
+                    updateSelectedMaterialDisplay();
+                    
+                    // Пересчитываем стоимость
+                    const area = calculateSquare();
+                    calculateTotalPrice(area);
+                });
+            });
+        }
+
+        // Функция для закрытия всех аккордеонов
+        function closeAllAccordions() {
+            document.querySelectorAll('.accordion-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.classList.remove('active');
+            });
+        }
+
+        function updateSelectedMaterialDisplay() {
+            const selectedMaterialDiv = document.getElementById('selectedMaterial');
+            const materialNameSpan = document.getElementById('materialName');
+            const materialPriceSpan = document.getElementById('materialPrice');
+            
+            // Скрываем блок, если выбран материал с названием "None" или "Не выбирать"
+            if (selectedMaterial.name && selectedMaterial.name !== "Не выбирать" && selectedMaterial.name !== "None") {
+                materialNameSpan.textContent = selectedMaterial.name;
+                materialPriceSpan.textContent = selectedMaterial.price;
+                selectedMaterialDiv.style.display = 'block';
+            } else {
+                selectedMaterialDiv.style.display = 'none';
+            }
+        }
+
+        function calculateTotalPrice(area) {
+            const priceBreakdown = document.getElementById('priceBreakdown');
+            const breakdownDetails = document.getElementById('breakdownDetails');
+            const totalPriceSpan = document.getElementById('totalPrice');
+            
+            // Скрываем расчет стоимости, если выбран материал с названием "None" или "Не выбирать"
+            if (selectedMaterial.name && selectedMaterial.name !== "Не выбирать" && selectedMaterial.name !== "None" && area > 0) {
+                const totalPrice = area * selectedMaterial.price;
+                
+                breakdownDetails.innerHTML = `
+                    Площадь: ${area} × ${selectedMaterial.price} руб/м² = ${totalPrice} руб.
+                `;
+                totalPriceSpan.textContent = totalPrice;
+                priceBreakdown.style.display = 'block';
+            } else {
+                priceBreakdown.style.display = 'none';
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            updateField('circulation', 'Ввели тираж: ');
+            updateField('width', 'Ввели ширину: ');
+            updateField('height', 'Ввели высоту: ');
+            calculatePerimeter();
+            calculateSquare();
+            initAccordion();
+        });
     </script>
 </body>
 </html>
