@@ -257,9 +257,9 @@
             <div id="heightOutput" class="output-text">Ввели высоту: </div>
 
             <!-- Блок для выбранного материала -->
-            <div id="selectedMaterial" class="selected-material" style="display: none;">
-                <strong>Выбранный материал:</strong> <span id="materialName">-</span><br>
-                <strong>Цена за м²:</strong> <span id="materialPrice">0</span> руб.
+            <div id="selectedMaterial" class="selected-material">
+                <strong>Выбранный материал:</strong> <span id="materialName">Пленка Ораджет (1.6 М)</span><br>
+                <strong>Цена за м²:</strong> <span id="materialPrice">650</span> руб.
             </div>
 
             <!-- Блок для вывода периметра -->
@@ -269,7 +269,7 @@
             <div id="SquareOutput">Площадь: 0</div>
 
             <!-- Блок с расчетом стоимости -->
-            <div id="priceBreakdown" class="price-breakdown" style="display: none;">
+            <div id="priceBreakdown" class="price-breakdown">
                 <h3>Расчет стоимости:</h3>
                 <div id="breakdownDetails"></div>
                 <div style="margin-top: 10px; font-size: 18px; font-weight: bold; color: #e74c3c;">
@@ -283,7 +283,7 @@
             <div class="accordion">
                 <!-- Объединенный список материалов -->
                 <div class="accordion-item">
-                    <div class="accordion-header" id="accordionTitle">1.6 | 3.2 (М)</div>
+                    <div class="accordion-header" id="accordionTitle">Пленка Ораджет (1.6 М)</div>
                     <div class="accordion-content">
                         <!-- Пункт "Не выбирать" -->
                         <div class="no-selection-item" data-name="Не выбирать" data-display-name="Не выбрано" data-price="1">
@@ -294,7 +294,7 @@
                         <!-- Материалы 1.6 М -->
                         <div class="material-group">
                             <div class="material-subheader">1.6 М -----------------------------------------------------------------------------------------------</div>
-                            <div class="material-item" data-name="Пленка Ораджет (1.6 М)" data-price="650">
+                            <div class="material-item selected-default" data-name="Пленка Ораджет (1.6 М)" data-price="650">
                                 <span class="material-name">Пленка Ораджет</span>
                                 <span class="material-price">650 руб/м²</span>
                             </div>
@@ -525,8 +525,8 @@
     <script>
         // Переменные для хранения выбранного материала
         let selectedMaterial = {
-            name: '',
-            price: 0
+            name: 'Пленка Ораджет (1.6 М)',
+            price: 650
         };
 
         // Функции для основной формы (ваши оригинальные функции)
@@ -607,6 +607,12 @@
 
         // Функции для аккордеона материалов
         function initAccordion() {
+            // Устанавливаем выделение для материала по умолчанию
+            const defaultMaterial = document.querySelector('.material-item.selected-default');
+            if (defaultMaterial) {
+                defaultMaterial.style.backgroundColor = '#e8f4fd';
+            }
+
             // Обработчики для заголовков аккордеона
             document.querySelectorAll('.accordion-header').forEach(header => {
                 header.addEventListener('click', () => {
@@ -714,6 +720,10 @@
             calculatePerimeter();
             calculateSquare();
             initAccordion();
+            
+            // Сразу рассчитываем стоимость с материалом по умолчанию
+            const area = calculateSquare();
+            calculateTotalPrice(area);
         });
     </script>
 </body>
