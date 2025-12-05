@@ -19,7 +19,7 @@
         
         .materials-section {
             flex: 0.5;
-            transform: translateX(-850px);
+ 
         }
 
         /* Стили для подписей полей ввода */
@@ -32,65 +32,14 @@
             margin-bottom: 5px;
         }
         
-        /* Стили для вывода значений */
-        .output-text {
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            color: #34495e;
-            margin: 5px 0;
-            width: 300px; /* ← одинаковая ширина */
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            border-left: 4px solid #bdc3c7;
-            box-sizing: border-box;
-        }
-        
-        /* ОБЩИЕ СТИЛИ для полей периметра и площади */
-        #perimeterOutput, #SquareOutput {
-            font-family: 'Arial', sans-serif;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            border-left: 4px solid #2980b9;
-            color: #2980b9;
-            width: 300px; /* ← одинаковая ширина */
-            box-sizing: border-box;
-        }
-        
-        /* Стили для полей ввода */
-        input[type="text"] {
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            padding: 8px;
-            border: 2px solid #bdc3c7;
-            border-radius: 4px;
-            width: 300px; /* ← одинаковая ширина */
-            box-sizing: border-box;
-            margin-bottom: 15px;
-        }
-        
-        input[type="text"]:focus {
-            border-color: #3498db;
-            outline: none;
-        }
+       
+      
+      
+    
+	
 
-        /* Стили для заголовка Материалы */
-        .materials-section h2 {
-            text-align: center;
-            font-family: Arial, sans-serif;
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        /* Стили для списка материалов */
-        .accordion {
-            margin-top: 20px;
+       
+	  
         }
 
         .accordion-item {
@@ -139,14 +88,7 @@
             overflow-y: auto; /* Добавляем вертикальную прокрутку */
         }
 
-        /* Стили для подзаголовков групп материалов */
-        .material-subheader {
-            font-weight: bold;
-            font-size: 16px;
-            color: #2c3e50;
-            margin: 15px 0 10px 0;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
+      
         }
 
         .material-item {
@@ -251,6 +193,24 @@
             <label for="height">Высота:</label>
             <input type="text" id="height" name="height" placeholder="Введите высоту" 
                    oninput="updateAllFields()">
+				   
+				  
+<h3>Коэффициенты цены:</h3>
+
+<label for="coefficientA">Коэффициент для клиента (a):</label>
+<input type="number" id="coefficientA" value="1.2" step="0.1" 
+       oninput="updateAllFields()">
+
+<label for="coefficientB">Коэффициент для посредника (b):</label>
+<input type="number" id="coefficientB" value="0.8" step="0.1" 
+       oninput="updateAllFields()">
+				   
+				   
+				   
+				   
+				   
+				   
+				   
 
             <div id="circulationOutput" class="output-text">Ввели тираж: </div>
             <div id="widthOutput" class="output-text">Ввели ширину: </div>
@@ -270,13 +230,29 @@
 
             <!-- Блок с расчетом стоимости -->
             <div id="priceBreakdown" class="price-breakdown">
-                <h3>Расчет стоимости:</h3>
-                <div id="breakdownDetails"></div>
-                <div style="margin-top: 10px; font-size: 18px; font-weight: bold; color: #e74c3c;">
-                    Итого: <span id="totalPrice">0</span> руб.
-                </div>
-            </div>
+    <h3>Расчет стоимости:</h3>
+    <div id="breakdownDetails"></div>
+    
+    <!-- ЦЕНА ДЛЯ КЛИЕНТА -->
+    <div style="margin-top: 15px; padding: 10px; background: #e8f4fd; border-radius: 5px;">
+        <h4 style="color: #2980b9; margin: 0 0 10px 0;">
+            Для клиента (×<span id="coeffAValue">1.2</span>):
+        </h4>
+        <div style="font-size: 18px; font-weight: bold; color: #27ae60;">
+            Итого: <span id="totalPriceForClient">0</span> руб.
         </div>
+    </div>
+    
+    <!-- ЦЕНА ДЛЯ ПОСРЕДНИКА -->
+    <div style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 5px;">
+        <h4 style="color: #d35400; margin: 0 0 10px 0;">
+            Для посредника (×<span id="coeffBValue">0.8</span>):
+        </h4>
+        <div style="font-size: 18px; font-weight: bold; color: #e67e22;">
+            Итого: <span id="totalPriceForAgent">0</span> руб.
+        </div>
+    </div>
+</div>
 
         <div class="materials-section">
             <h2>Материалы</h2>
@@ -293,7 +269,7 @@
 
                         <!-- Материалы 1.6 М -->
                         <div class="material-group">
-                            <div class="material-subheader">1.6 М ----------------------------------------------------------------------------------------------</div>
+                            <div class="material-subheader">1.6 М -----------------------------------------------------------------------------------------------</div>
                             <div class="material-item selected-default" data-name="Пленка Ораджет (1.6 М)" data-price="650">
                                 <span class="material-name">Пленка Ораджет</span>
                                 <span class="material-price">650 руб/м²</span>
@@ -350,7 +326,7 @@
                         
                         <!-- Материалы 3.2 М -->
                         <div class="material-group">
-                            <div class="material-subheader">3.2 М ----------------------------------------------------------------------------------------------</div>
+                            <div class="material-subheader">3.2 М -----------------------------------------------------------------------------------------------</div>
                             <div class="material-item" data-name="Баннер 440 г/м2 (3.2 М)" data-price="255">
                                 <span class="material-name">Баннер 440 г/м²</span>
                                 <span class="material-price">255 руб/м²</span>
@@ -455,7 +431,7 @@
                     </div>
                 </div>
 
-                <!-- ЧЕТВЕРТЫЙ список материалов - Проклейка -->
+                <!-- ЧЕТВЕРТЫЙ список материалов - проклейка -->
 				<h2>Проклейка</h2>
                 <div class="accordion-item">
                     <div class="accordion-header" id="accordionTitle4">Без проклейки</div>
@@ -466,7 +442,7 @@
                             <span class="no-selection-price"></span>
                         </div>
 
-                        <!-- Группа материалов для проклейки -->
+                        <!-- Группа материалов для окантовки -->
                         <div class="material-group">
                             <div class="material-subheader"></div>
                             <div class="material-item" data-name="С проклейкой" data-price="2">
@@ -477,16 +453,91 @@
                         </div>
                     </div>
                 </div>
-            </div>
+			<!-- ПЯТЫЙ список материалов - Окантовка -->
+<h2>ХЗ</h2>
+<div class="accordion-item">
+    <div class="accordion-header" id="accordionTitle5">Без окантовки</div>
+    <div class="accordion-content">
+        <!-- Пункт "Не выбирать" -->
+        <div class="no-selection-item" data-name="Без окантовки" data-display-name="Без окантовки" data-price="1">
+            <span class="material-name">Без окантовки</span>
+            <span class="no-selection-price"></span>
         </div>
-    </div>
+
+        <!-- Группа материалов для окантовки -->
+        <div class="material-group">
+            <div class="material-subheader"></div>
+            <div class="material-item" data-name="1" data-price="1">
+                <span class="material-name">1</span>
+                <span class="material-price">1 руб/м.п.</span>
+				<div class="material-group">
+            <div class="material-subheader"></div>
+            <div class="material-item" data-name="2" data-price="2">
+                <span class="material-name">2</span>
+                <span class="material-price">2 руб/м.п.</span>
+				<div class="material-group"></div>
+            <div class="material-subheader"></div>
+            <div class="material-item" data-name="3" data-price="3">
+                <span class="material-name">3</span>
+                <span class="material-price">3 руб/м.п.</span>
+				<div class="material-group">
+            <div class="material-subheader"></div>
+            <div class="material-item" data-name="4" data-price="4">
+                <span class="material-name">4</span>
+                <span class="material-price">4 руб/м.п.</span>
+				<div class="material-group">
+            <div class="material-subheader"></div>
+            <div class="material-item" data-name="5" data-price="5">
+                <span class="material-name">5</span>
+                <span class="material-price">5 руб/м.п.</span>
+				<div class="material-group">
+            <div class="material-subheader"></div>
+            <div class="material-item" data-name="6" data-price="6">
+                <span class="material-name">6</span>
+                <span class="material-price">6 руб/м.п.</span>
+				<div class="material-group">
+            <div class="material-subheader"></div>
+            <div class="material-item" data-name="7" data-price="7">
+                <span class="material-name">7</span>
+                <span class="material-price">7 руб/м.п.</span>
+				<div class="material-group">
+            <div class="material-subheader"></div>
+            <div class="material-item" data-name="8" data-price="8">
+                <span class="material-name">8</span>
+                <span class="material-price">8 руб/м.п.</span>
+				<div class="material-group">
+            <div class="material-subheader"></div>
+            <div class="material-item" data-name="9" data-price="9">
+                <span class="material-name">9</span>
+                <span class="material-price">9 руб/м.п.</span>
+				<div class="material-group">
+            <div class="material-subheader"></div>
+            <div class="material-item" data-name="10" data-price="10">
+                <span class="material-name">10</span>
+                <span class="material-price">10 руб/м.п.</span>
+
+         
+            
+    
 
     <script>
+	
+	
+	
+	
+	
         // Переменные для хранения выбранного материала
         let selectedMaterial = {
             name: 'Пленка Ораджет (1.6 М)',
             price: 650
         };
+
+let coefficientA = 1.2;  // для клиента
+let coefficientB = 0.8;  // для посредника
+
+
+
+
 
         // Функции для основной формы (оригинальные функции)
         function updateField(fieldId, prefix) {
@@ -564,7 +615,15 @@
             calculateTotalPrice(area);
         }
 
-        // Функции для аккордеона материалов
+		
+		
+		
+		
+		
+		
+		
+
+        // Функции для списка материалов
         function initAccordion() {
             // Устанавливаем выделение для материала по умолчанию
             const defaultMaterial = document.querySelector('.material-item.selected-default');
@@ -653,23 +712,50 @@
         }
 
         function calculateTotalPrice(area) {
-            const priceBreakdown = document.getElementById('priceBreakdown');
-            const breakdownDetails = document.getElementById('breakdownDetails');
-            const totalPriceSpan = document.getElementById('totalPrice');
-            
-            // Скрываем расчет стоимости, если выбран материал с названием "None" или "Не выбирать"
-            if (selectedMaterial.name && selectedMaterial.name !== "Не выбирать" && selectedMaterial.name !== "None" && area > 0) {
-                const totalPrice = area * selectedMaterial.price;
-                
-                breakdownDetails.innerHTML = `
-                    Площадь: ${area} × ${selectedMaterial.price} руб/м² = ${totalPrice} руб.
-                `;
-                totalPriceSpan.textContent = totalPrice;
-                priceBreakdown.style.display = 'block';
-            } else {
-                priceBreakdown.style.display = 'none';
-            }
-        }
+    const priceBreakdown = document.getElementById('priceBreakdown');
+    const breakdownDetails = document.getElementById('breakdownDetails');
+    
+    // Берем коэффициенты из полей ввода
+    coefficientA = parseFloat(document.getElementById('coefficientA').value) || 1.2;
+    coefficientB = parseFloat(document.getElementById('coefficientB').value) || 0.8;
+    
+    if (selectedMaterial.name && selectedMaterial.name !== "Не выбирать" && area > 0) {
+        // 1. Считаем базовую цену
+        const basePrice = area * selectedMaterial.price;
+        
+        // 2. Считаем две цены с разными коэффициентами
+        const priceForClient = basePrice * coefficientA;    // для клиента
+        const priceForAgent = basePrice * coefficientB;     // для посредника
+        
+        // 3. Разница
+        const difference = priceForClient - priceForAgent;
+        
+        // 4. Показываем детали расчета
+        breakdownDetails.innerHTML = `Площадь: ${area} × ${selectedMaterial.price} руб/м² = ${basePrice} руб.<br>
+            Коэффициент для клиента (a): ${coefficientA}<br>
+            Коэффициент для посредника (b): ${coefficientB}`;
+        
+        // 5. Обновляем цены на странице
+        document.getElementById('totalPriceForClient').textContent = Math.round(priceForClient);
+        document.getElementById('totalPriceForAgent').textContent = Math.round(priceForAgent);
+        document.getElementById('coeffAValue').textContent = coefficientA;
+        document.getElementById('coeffBValue').textContent = coefficientB;
+        
+        // 6. Показываем блок с расчетами
+        priceBreakdown.style.display = 'block';
+    } else {
+        // Если не выбрано или площадь 0 - скрываем расчеты
+        priceBreakdown.style.display = 'none';
+    }
+}
+
+
+
+
+
+
+	
+
 
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
@@ -687,5 +773,3 @@
     </script>
 </body>
 </html>
-
-
